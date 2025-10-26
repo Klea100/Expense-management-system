@@ -1,0 +1,49 @@
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+  <!-- Summary Cards -->
+  <p-card header="Total Budget" class="shadow-sm">
+    <div class="text-2xl font-semibold text-emerald-600">
+      {{ totalBudget() | number : '1.0-0' }}
+    </div>
+    <div class="text-sm text-gray-500">All teams</div>
+  </p-card>
+  <p-card header="Total Spent" class="shadow-sm">
+    <div class="text-2xl font-semibold text-blue-600">
+      {{ totalSpent() | number : '1.0-0' }}
+    </div>
+    <div class="text-sm text-gray-500">Month to date</div>
+  </p-card>
+  <p-card header="Remaining" class="shadow-sm">
+    <div class="text-2xl font-semibold text-amber-600">
+      {{ remaining() | number : '1.0-0' }}
+    </div>
+    <div class="text-sm text-gray-500">Available budget</div>
+  </p-card>
+  <p-card header="Utilization" class="shadow-sm">
+    <p-progressBar [value]="utilPercent()"></p-progressBar>
+    <div class="text-sm text-gray-500 mt-2">{{ utilPercent() }}% used</div>
+  </p-card>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
+  <p-card header="Spend vs Budget" class="lg:col-span-2 h-[320px] shadow-sm">
+    <p-chart
+      type="line"
+      [data]="chartData()"
+      [options]="chartOptions"
+      style="height: 260px"
+    ></p-chart>
+  </p-card>
+
+  <p-card header="Recent Alerts" class="shadow-sm">
+    <ul class="space-y-2">
+      <li *ngFor="let a of alerts() || []" class="flex items-center justify-between">
+        <span class="text-sm text-gray-700">{{ a?.teamName || a?.team || 'Team' }}</span>
+        <p-tag
+          [value]="a?.level || 'warning'"
+          [severity]="a?.level === 'critical' ? 'danger' : 'warn'"
+        ></p-tag>
+      </li>
+      <li *ngIf="!alerts() || alerts()?.length === 0" class="text-sm text-gray-500">No alerts</li>
+    </ul>
+  </p-card>
+</div>

@@ -1,0 +1,148 @@
+<p-dialog
+  header="Create New Team"
+  [visible]="visible"
+  [modal]="true"
+  [style]="{ width: '600px', maxWidth: '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onHide()"
+>
+  <form [formGroup]="form" class="p-fluid">
+    <div class="grid">
+      <div class="col-12">
+        <label for="name" class="block text-sm mb-1">Team Name *</label>
+        <input id="name" pInputText type="text" formControlName="name" placeholder="Marketing" />
+        <small class="p-error" *ngIf="fieldError('name')">{{ fieldError('name') }}</small>
+      </div>
+
+      <div class="col-12 md:col-6">
+        <label for="budget" class="block text-sm mb-1">Budget *</label>
+        <p-inputNumber
+          id="budget"
+          formControlName="budget"
+          mode="currency"
+          currency="USD"
+          [min]="0"
+          [useGrouping]="true"
+        ></p-inputNumber>
+        <small class="p-error" *ngIf="fieldError('budget')">{{ fieldError('budget') }}</small>
+      </div>
+
+      <div class="col-12 md:col-6">
+        <label for="currency" class="block text-sm mb-1">Currency</label>
+        <select
+          id="currency"
+          class="p-inputtext p-component w-full h-10 rounded-md border border-gray-200 px-3"
+          formControlName="currency"
+        >
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="CAD">CAD</option>
+        </select>
+      </div>
+
+      <div class="col-12">
+        <label for="description" class="block text-sm mb-1">Description *</label>
+        <textarea
+          id="description"
+          pInputText
+          rows="3"
+          class="w-full"
+          formControlName="description"
+          placeholder="Describe this team's responsibilities"
+        ></textarea>
+        <small class="p-error" *ngIf="fieldError('description')">{{
+          fieldError('description')
+        }}</small>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="flex items-center justify-between mb-2">
+        <label class="font-medium">Team Members</label>
+        <button
+          pButton
+          type="button"
+          label="Add Member"
+          icon="pi pi-plus"
+          class="p-button-sm p-button-text"
+          (click)="addMember()"
+        ></button>
+      </div>
+
+      <div formArrayName="members" class="flex flex-col gap-2">
+        <div
+          *ngFor="let g of members.controls; let i = index"
+          [formGroupName]="i"
+          class="grid items-start gap-2"
+        >
+          <div class="col-12 md:col-4">
+            <input
+              pInputText
+              type="text"
+              formControlName="name"
+              placeholder="Name"
+              class="w-full"
+            />
+          </div>
+          <div class="col-12 md:col-4">
+            <input
+              pInputText
+              type="email"
+              formControlName="email"
+              placeholder="Email"
+              class="w-full"
+            />
+          </div>
+          <div class="col-8 md:col-3">
+            <select
+              class="p-inputtext p-component w-full h-10 rounded-md border border-gray-200 px-3"
+              formControlName="role"
+            >
+              <option value="manager">Manager</option>
+              <option value="member">Member</option>
+            </select>
+          </div>
+          <div class="col-4 md:col-1 flex justify-end">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              class="p-button-danger p-button-text p-button-sm"
+              (click)="removeMember(i)"
+            ></button>
+          </div>
+        </div>
+        <div
+          *ngIf="members.length === 0"
+          class="text-center p-3 border-1 border-dashed surface-border border-round text-500"
+        >
+          <i class="pi pi-users text-2xl mb-2"></i>
+          <div class="text-sm">No members added</div>
+          <small>Add members to receive budget alerts</small>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="onHide()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Create Team"
+      icon="pi pi-check"
+      [disabled]="form.invalid || submitting"
+      [loading]="submitting"
+      (click)="submit()"
+    ></button>
+  </ng-template>
+</p-dialog>

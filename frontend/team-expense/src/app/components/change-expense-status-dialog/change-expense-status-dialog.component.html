@@ -1,0 +1,72 @@
+<p-dialog
+  header="Change Expense Status"
+  [visible]="visible"
+  [modal]="true"
+  [style]="{ width: '520px', maxWidth: '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onHide()"
+>
+  <div *ngIf="expense" class="mb-3 text-sm text-700">
+    <div class="mb-1"><b>Description:</b> {{ expense.description }}</div>
+    <div class="mb-1">
+      <b>Amount:</b> {{ expense.amount | number : '1.2-2' }} {{ expense.currency }}
+    </div>
+    <div><b>Current:</b> {{ expense.status | titlecase }}</div>
+  </div>
+
+  <form [formGroup]="form" class="p-fluid">
+    <div class="grid">
+      <div class="col-12">
+        <label class="block text-sm mb-1">New Status *</label>
+        <select
+          class="p-inputtext p-component w-full h-10 rounded-md border border-gray-200 px-3"
+          formControlName="status"
+        >
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="col-12">
+        <label class="block text-sm mb-1">Manager Name *</label>
+        <input pInputText type="text" formControlName="name" placeholder="Your name" />
+      </div>
+      <div class="col-12">
+        <label class="block text-sm mb-1">Manager Email *</label>
+        <input pInputText type="email" formControlName="email" placeholder="your@email.com" />
+      </div>
+
+      <div class="col-12" *ngIf="form.value.status === 'rejected'">
+        <label class="block text-sm mb-1">Reason *</label>
+        <textarea
+          pInputText
+          rows="3"
+          class="w-full"
+          formControlName="reason"
+          placeholder="Why is this rejected?"
+        ></textarea>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="onHide()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Update"
+      icon="pi pi-check"
+      [disabled]="form.invalid || submitting"
+      [loading]="submitting"
+      (click)="submit()"
+    ></button>
+  </ng-template>
+</p-dialog>

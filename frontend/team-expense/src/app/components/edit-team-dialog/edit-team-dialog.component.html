@@ -1,0 +1,74 @@
+<p-dialog
+  header="Update Team"
+  [visible]="visible"
+  [modal]="true"
+  [style]="{ width: '600px', maxWidth: '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onHide()"
+>
+  <form [formGroup]="form" class="p-fluid">
+    <div class="grid">
+      <div class="col-12">
+        <label class="block text-sm mb-1">Team Name *</label>
+        <input pInputText type="text" formControlName="name" placeholder="Team name" />
+        <small class="p-error" *ngIf="fieldError('name')">{{ fieldError('name') }}</small>
+      </div>
+      <div class="col-12 md:col-6">
+        <label class="block text-sm mb-1">Budget *</label>
+        <p-inputNumber
+          formControlName="budget"
+          [min]="0"
+          mode="decimal"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="0"
+        ></p-inputNumber>
+        <small class="p-error" *ngIf="fieldError('budget')">{{ fieldError('budget') }}</small>
+      </div>
+      <div class="col-12 md:col-6">
+        <label class="block text-sm mb-1">Currency</label>
+        <select
+          class="p-inputtext p-component w-full h-10 rounded-md border border-gray-200 px-3"
+          formControlName="currency"
+        >
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="GBP">GBP</option>
+          <option value="CAD">CAD</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="block text-sm mb-1">Description</label>
+        <textarea
+          pInputText
+          rows="3"
+          class="w-full"
+          formControlName="description"
+          placeholder="Brief description"
+        ></textarea>
+        <small class="p-error" *ngIf="fieldError('description')">{{
+          fieldError('description')
+        }}</small>
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="onHide()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Update"
+      icon="pi pi-check"
+      [disabled]="form.invalid || submitting"
+      [loading]="submitting"
+      (click)="submit()"
+    ></button>
+  </ng-template>
+</p-dialog>

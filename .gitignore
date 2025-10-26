@@ -1,0 +1,40 @@
+# Root-level ignores for backend and frontend
+
+# Node / build outputs
+node_modules/
+dist/
+.angular/
+coverage/
+**/*.log
+logs/
+*.cache
+
+# Temp directories
+.tmp/
+**/tmp/
+
+# IDE/Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Environment files and secrets
+.env
+.env.*
+backend/.env
+backend/.env.*
+frontend/**/.env
+frontend/**/.env.*
+
+# Backend specifics
+backend/node_modules/
+backend/dist/
+backend/coverage/
+backend/logs/
+
+# Frontend specifics (Angular)
+frontend/team-expense/node_modules/
+frontend/team-expense/dist/
+frontend/team-expense/.angular/
+frontend/team-expense/coverage/

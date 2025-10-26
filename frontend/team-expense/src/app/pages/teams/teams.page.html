@@ -1,0 +1,133 @@
+<div class="flex justify-between gap-3 mb-3 relative z-10">
+  <div class="flex items-center gap-3 flex-wrap">
+    <input
+      pInputText
+      type="text"
+      placeholder="Search teams..."
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+      class="w-80"
+    />
+    <div>
+      <label class="block text-xs text-gray-500 mb-1 -mt-5">Status</label>
+      <select
+        class="p-inputtext p-component w-48 h-10 rounded-md border border-gray-200 px-3"
+        [ngModel]="status()"
+        (ngModelChange)="status.set($event)"
+      >
+        <option *ngFor="let o of statusOptions" [value]="o.value">{{ o.label }}</option>
+      </select>
+    </div>
+    <button
+      pButton
+      type="button"
+      label="Apply"
+      class="p-button-sm"
+      (click)="onApplyFilters()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Clear"
+      class="p-button-sm p-button-text"
+      (click)="onClearFilters()"
+    ></button>
+  </div>
+  <div class="flex items-center gap-3">
+    <button
+      pButton
+      type="button"
+      label="New Team"
+      icon="pi pi-plus"
+      class="p-button-sm"
+      (click)="showCreate.set(true)"
+    ></button>
+    <div class="text-xs text-gray-500">Total: {{ total() }}</div>
+  </div>
+</div>
+
+<p-table
+  [value]="teams()"
+  [paginator]="true"
+  [rows]="rows"
+  [totalRecords]="total()"
+  [lazy]="true"
+  [first]="(page() - 1) * rows"
+  (onPage)="onPage($event)"
+  [tableStyle]="{ width: '100%' }"
+  styleClass="p-datatable-sm shadow-sm w-full relative z-0"
+  [loading]="loading()"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th style="width: 40%">Name</th>
+      <th style="width: 12rem">Budget</th>
+      <th style="width: 12rem">Spent</th>
+      <th style="width: 14rem">Status</th>
+      <th style="width: 9rem"></th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-team>
+    <tr>
+      <td class="font-medium" style="width: 40%">{{ team.name }}</td>
+      <td style="width: 12rem">{{ team.budget | number : '1.0-0' }} {{ team.currency }}</td>
+      <td style="width: 12rem">{{ team.totalSpent | number : '1.0-0' }} {{ team.currency }}</td>
+      <td style="width: 14rem">
+        <p-tag
+          [value]="team.budgetStatus"
+          [severity]="
+            team.budgetStatus === 'good'
+              ? 'success'
+              : team.budgetStatus === 'over-budget' || team.budgetStatus === 'critical'
+              ? 'danger'
+              : 'warn'
+          "
+          class="px-3 py-1"
+        ></p-tag>
+      </td>
+      <td style="width: 9rem">
+        <div class="flex gap-1">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-arrow-right"
+            class="p-button-text"
+            (click)="go(team)"
+            title="View"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            class="p-button-text"
+            (click)="onEdit(team)"
+            title="Edit"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="p-button-text p-button-danger"
+            (click)="onDelete(team)"
+            title="Delete"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<!-- Create Team Dialog -->
+<app-create-team-dialog
+  [visible]="showCreate()"
+  (close)="showCreate.set(false)"
+  (created)="onTeamCreated($event)"
+></app-create-team-dialog>
+
+<!-- Edit Team Dialog -->
+<app-edit-team-dialog
+  [visible]="showEdit()"
+  [team]="selectedTeam()"
+  (close)="showEdit.set(false)"
+  (updated)="onTeamUpdated($event)"
+></app-edit-team-dialog>

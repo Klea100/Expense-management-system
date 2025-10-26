@@ -1,0 +1,31 @@
+<div class="min-h-screen bg-gray-50 flex">
+  <!-- Sidebar -->
+  <aside class="w-16 bg-white border-r flex flex-col items-center py-4 gap-6">
+    <a routerLink="/dashboard" class="pi pi-home text-gray-600 text-xl" title="Dashboard"></a>
+    <a routerLink="/teams" class="pi pi-users text-gray-600 text-xl" title="Teams"></a>
+    <a routerLink="/alerts" class="pi pi-bell text-gray-600 text-xl" title="Alerts"></a>
+  </aside>
+
+  <!-- Main content -->
+  <section class="flex-1 flex flex-col">
+    <!-- Topbar -->
+    <header class="bg-white border-b px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <i class="pi pi-th-large text-gray-500"></i>
+        <span class="text-sm text-gray-500">Expense Tracker</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="p-button p-component p-button-text"><i class="pi pi-search"></i></button>
+        <button class="p-button p-component p-button-text"><i class="pi pi-comments"></i></button>
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">Klea Hoxha</span>
+          <i class="pi pi-user text-gray-600"></i>
+        </div>
+      </div>
+    </header>
+
+    <main class="p-6 w-full">
+      <router-outlet />
+    </main>
+  </section>
+</div>

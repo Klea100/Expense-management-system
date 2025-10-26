@@ -1,0 +1,158 @@
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+  <p-card class="lg:col-span-1 shadow-sm">
+    <ng-template pTemplate="header">{{ team()?.name || 'Team' }}</ng-template>
+    <div class="space-y-2">
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500">Budget</span
+        ><span class="font-medium"
+          >{{ team()?.budget | number : '1.0-0' }} {{ team()?.currency }}</span
+        >
+      </div>
+      <div class="flex justify-between text-sm">
+        <span class="text-gray-500">Spent</span
+        ><span class="font-medium"
+          >{{ team()?.totalSpent | number : '1.0-0' }} {{ team()?.currency }}</span
+        >
+      </div>
+      <p-progressBar [value]="util"></p-progressBar>
+      <div class="text-xs text-gray-500">{{ util }}% used</div>
+    </div>
+  </p-card>
+
+  <p-card class="lg:col-span-2 shadow-sm">
+    <ng-template pTemplate="header">
+      <div class="flex items-center justify-between">
+        <span>Expenses</span>
+        <div class="flex gap-2">
+          <button
+            pButton
+            type="button"
+            label="Insights"
+            icon="pi pi-chart-line"
+            class="p-button-sm p-button-text"
+            [routerLink]="['/insights', team()?._id]"
+            [disabled]="!team()?._id"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Add Expense"
+            icon="pi pi-plus"
+            class="p-button-sm"
+            (click)="showCreateExpense.set(true)"
+          ></button>
+        </div>
+      </div>
+    </ng-template>
+    <!-- Filters -->
+    <div class="filters-container mb-3 flex flex-wrap gap-2 items-end">
+      <div class="filter-group">
+        <input
+          type="text"
+          placeholder="Search expenses..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+          class="p-inputtext p-component w-64 h-10 rounded-md border border-gray-200 px-3"
+        />
+      </div>
+
+      <div class="filter-group">
+        <select
+          [ngModel]="statusFilter()"
+          (ngModelChange)="statusFilter.set($event); onFiltersChange()"
+          class="p-inputtext p-component w-40 h-10 rounded-md border border-gray-200 px-3"
+        >
+          <option value="all">All Status</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select
+          [ngModel]="categoryFilter()"
+          (ngModelChange)="categoryFilter.set($event); onFiltersChange()"
+          class="p-inputtext p-component w-44 h-10 rounded-md border border-gray-200 px-3"
+        >
+          <option value="all">All Categories</option>
+          <option *ngFor="let category of expenseCategories" [value]="category">
+            {{ category | titlecase }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select
+          [ngModel]="dateFilter()"
+          (ngModelChange)="dateFilter.set($event); onFiltersChange()"
+          class="p-inputtext p-component w-44 h-10 rounded-md border border-gray-200 px-3"
+        >
+          <option value="all">All Time</option>
+          <option value="today">Today</option>
+          <option value="week">Last Week</option>
+          <option value="month">Last Month</option>
+        </select>
+      </div>
+
+      <button pButton type="button" class="p-button-sm p-button-text" (click)="clearFilters()">
+        Clear Filters
+      </button>
+    </div>
+
+    <p-table [value]="filteredExpenses()" styleClass="p-datatable-sm" [loading]="loading()">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th style="width: 8rem"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-e>
+        <tr>
+          <td>{{ e.date | date }}</td>
+          <td>{{ e.description }}</td>
+          <td>{{ e.category }}</td>
+          <td>{{ e.amount | number : '1.0-0' }} {{ e.currency }}</td>
+          <td>
+            <p-tag
+              [value]="e.status"
+              [severity]="
+                e.status === 'approved' ? 'success' : e.status === 'rejected' ? 'danger' : 'warn'
+              "
+            ></p-tag>
+          </td>
+          <td>
+            <button
+              pButton
+              type="button"
+              class="p-button-text p-button-sm"
+              icon="pi pi-refresh"
+              label="Change"
+              (click)="openStatusDialog(e)"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Create Expense Dialog -->
+  <app-create-expense-dialog
+    [visible]="showCreateExpense()"
+    [teamId]="team()?._id!"
+    [teamName]="team()?.name || ''"
+    (close)="showCreateExpense.set(false)"
+    (created)="onExpenseCreated()"
+  ></app-create-expense-dialog>
+
+  <app-change-expense-status-dialog
+    [visible]="showStatus()"
+    [expense]="selectedExpense()!"
+    (close)="showStatus.set(false)"
+    (updated)="onStatusUpdated($event)"
+  ></app-change-expense-status-dialog>
+</div>

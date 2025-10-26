@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* PrimeNG minimal theming can be handled via utility classes; include base normalize here if needed. */
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+	color-scheme: light;
+}
+.p-card {
+	background-color: #ffffff !important;
+}
+
+/* Prevent dropdowns/selects from being clipped by the datatable scroll wrapper */
+.p-datatable,
+.p-datatable .p-datatable-wrapper {
+	overflow: visible;
+}

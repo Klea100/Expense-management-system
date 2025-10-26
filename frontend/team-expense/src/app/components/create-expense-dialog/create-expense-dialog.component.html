@@ -1,0 +1,131 @@
+<p-dialog
+  header="Add Expense"
+  [visible]="visible"
+  [modal]="true"
+  [style]="{ width: '600px', maxWidth: '95vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onHide()"
+>
+  <form [formGroup]="form" class="p-fluid">
+    <div class="grid">
+      <div class="col-12">
+        <label class="block text-sm mb-1">Team</label>
+        <input pInputText [value]="teamName || teamId" disabled />
+      </div>
+      <div class="col-12 md:col-6">
+        <label for="amount" class="block text-sm mb-1">Amount *</label>
+        <p-inputNumber
+          id="amount"
+          formControlName="amount"
+          [min]="0.01"
+          mode="decimal"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+        ></p-inputNumber>
+        <small class="p-error" *ngIf="fieldError('amount')">{{ fieldError('amount') }}</small>
+      </div>
+      <div class="col-12 md:col-6">
+        <label for="date" class="block text-sm mb-1">Date *</label>
+        <input
+          id="date"
+          type="date"
+          class="p-inputtext p-component w-full h-10 rounded-md border border-gray-200 px-3"
+          formControlName="date"
+        />
+        <small class="p-error" *ngIf="fieldError('date')">{{ fieldError('date') }}</small>
+      </div>
+      <div class="col-12">
+        <label for="description" class="block text-sm mb-1">Description *</label>
+        <textarea
+          id="description"
+          pInputText
+          rows="3"
+          class="w-full"
+          formControlName="description"
+          placeholder="What is this expense for?"
+        ></textarea>
+        <small class="p-error" *ngIf="fieldError('description')">{{
+          fieldError('description')
+        }}</small>
+      </div>
+      <div class="col-12 md:col-6">
+        <label for="category" class="block text-sm mb-1">Category *</label>
+        <select
+          id="category"
+          class="p-inputtext p-component w-full h-10 rounded-md border border-gray-200 px-3"
+          formControlName="category"
+        >
+          <option *ngFor="let c of categories" [value]="c">{{ c | titlecase }}</option>
+        </select>
+        <small class="p-error" *ngIf="fieldError('category')">{{ fieldError('category') }}</small>
+        <div
+          *ngIf="showAISuggestion && aiSuggestion"
+          class="mt-2 p-2 border-round surface-100 text-700"
+        >
+          <div class="flex items-center gap-2 mb-1">
+            <i class="pi pi-sparkles text-indigo-500"></i>
+            <span class="text-sm"
+              >AI suggests: <b>{{ aiSuggestion.category | titlecase }}</b></span
+            >
+          </div>
+          <div class="flex gap-2">
+            <button
+              pButton
+              type="button"
+              class="p-button-sm"
+              label="Accept"
+              icon="pi pi-check"
+              (click)="acceptAISuggestion()"
+            ></button>
+            <button
+              pButton
+              type="button"
+              class="p-button-sm p-button-text"
+              label="Dismiss"
+              icon="pi pi-times"
+              (click)="dismissAISuggestion()"
+            ></button>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 md:col-6">
+        <label class="block text-sm mb-1">Submitted By *</label>
+        <div class="grid">
+          <div class="col-12">
+            <input pInputText type="text" placeholder="Name" formControlName="submittedByName" />
+          </div>
+          <div class="col-12">
+            <input pInputText type="email" placeholder="Email" formControlName="submittedByEmail" />
+          </div>
+        </div>
+        <small class="p-error" *ngIf="fieldError('submittedByName')">{{
+          fieldError('submittedByName')
+        }}</small>
+        <small class="p-error" *ngIf="fieldError('submittedByEmail')">{{
+          fieldError('submittedByEmail')
+        }}</small>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      type="button"
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="onHide()"
+    ></button>
+    <button
+      pButton
+      type="button"
+      label="Create"
+      icon="pi pi-check"
+      [disabled]="form.invalid || submitting"
+      [loading]="submitting"
+      (click)="submit()"
+    ></button>
+  </ng-template>
+</p-dialog>
